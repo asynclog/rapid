@@ -11,6 +11,21 @@ import ObjectiveC
 
 public typealias RapidTableView = UITableView
 
+public extension UITableView {
+    var rapid: UITableView {
+        get {
+            let isNotRapid = (objc_getAssociatedObject(self, &AssocitionKey.adapter) != nil) ? false : true
+            if isNotRapid {
+                let adapter = RapidAdapter()
+                self.dataSource = adapter
+                self.delegate   = adapter
+                objc_setAssociatedObject(self, &AssocitionKey.adapter, adapter, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+            }
+            return self
+        }
+    }
+}
+
 public extension RapidTableView {
     
     private enum AssocitionKey {
@@ -18,11 +33,7 @@ public extension RapidTableView {
     }
     
     static func view(frame: CGRect, style: UITableViewStyle) -> RapidTableView {
-        let tableView = RapidTableView(frame: frame, style: style)
-        let adapter = RapidAdapter()
-        tableView.dataSource = adapter
-        tableView.delegate   = adapter
-        objc_setAssociatedObject(tableView, &AssocitionKey.adapter, adapter, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        let tableView = UITableView(frame: frame, style: style).rapid
         return tableView
     }
     
@@ -100,23 +111,23 @@ extension RapidAdapter: UITableViewDataSource {
 extension RapidAdapter: UITableViewDelegate {
         
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return sections[section].title
+        return sections[section].titleClosure?()
     }
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        return sections[section].headerView
+        return sections[section].headerViewClosure?()
     }
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-         return sections[section].headerViewHeight
+         return sections[section].headerViewHeightClosure()
     }
     
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-            return sections[section].footerView
+            return sections[section].footerViewClosure?()
     }
     
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        return sections[section].footerViewHiehgt
+        return sections[section].footerViewHiehgtClosure()
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {

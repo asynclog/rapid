@@ -44,12 +44,17 @@ public class Row<Cell>: RowType, Creatable, PrivateModuleUsable where Cell: Upda
     public let cellClass: AnyClass = Cell.self
     public var selectAction: CellSelectAction?
     
-    public var xib: Bool
+    public var xib: Bool {
+        get {
+            return Cell.isXib()
+        }
+        
+    }
     
-    public init(height: CGFloat = CGFloat.leastNormalMagnitude,viewModel: Cell.ViewModel? = nil, xib: Bool = false) {
+    public init(height: CGFloat = CGFloat.leastNormalMagnitude,viewModel: Cell.ViewModel? = nil) {
         self.height = height
         self.viewModel = viewModel
-        self.xib = xib
+//        self.xib = xib
     }
     
     public func update(cell: UITableViewCell) {

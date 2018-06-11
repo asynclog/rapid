@@ -8,18 +8,30 @@
 
 import UIKit
 
+public typealias SectionTitleClosure = () -> (String?)
+public typealias SectionViewClosure = () -> (UIView?)
+public typealias SectionViewHeightClosure = () -> (CGFloat)
+
 public class Section {
-    public var title: String?
+    public var titleClosure: SectionTitleClosure?
     
-    public var headerView: UIView?
-    public var headerViewHeight: CGFloat = UITableViewAutomaticDimension
+    public var headerViewClosure: SectionViewClosure?
+    public var headerViewHeightClosure: SectionViewHeightClosure = Section.defaultHeightClosure
     
-    public var footerView: UIView?
-    public var footerViewHiehgt: CGFloat = UITableViewAutomaticDimension
+    public var footerViewClosure: SectionViewClosure?
+    public var footerViewHiehgtClosure: SectionViewHeightClosure = Section.defaultHeightClosure
 
     public var rows = [RowType]()
     
     public init() {
         
+    }
+    
+    
+}
+
+extension Section {
+    internal final class func defaultHeightClosure() -> CGFloat {
+        return  CGFloat.leastNormalMagnitude
     }
 }
