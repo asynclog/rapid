@@ -1,0 +1,11 @@
+use_frameworks!
+
+target 'Rapid_Example' do
+  pod 'Rapid', :path => '../'
+
+  target 'Rapid_Tests' do
+    inherit! :search_paths
+
+    
+  end
+end
